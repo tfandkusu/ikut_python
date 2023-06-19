@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "ikut-python"
+version = "0.1.0"
+description = "スプラトゥーン + 画像認識のプロダクト開発のための、Pythonスクリプト群。"
+authors = ["Haruhiko Takada <haruhiko.takada@gmail.com>"]
+license = "Apache License 2.0"
+readme = "README.md"
+packages = [{include = "ikut_python"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+pyproject-flake8 = "^6.0.0.post1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+max-line-length = 88
+ignore = "E203"
+exclude = ".venv"
+
+[tool.isort]
+profile = "black"

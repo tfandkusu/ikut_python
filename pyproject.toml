@@ -5,10 +5,11 @@ description = "スプラトゥーン + 画像認識のプロダクト開発の�
 authors = ["Haruhiko Takada <haruhiko.takada@gmail.com>"]
 license = "Apache License 2.0"
 readme = "README.md"
-packages = [{include = "ikut_python"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+opencv-python = "^4.7.0.72"
+tqdm = "^4.65.0"
 
 
 [tool.poetry.group.dev.dependencies]

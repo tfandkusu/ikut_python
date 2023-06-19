@@ -1,0 +1,33 @@
+# ワークフローの名前
+name: check
+# ワークフロー実行タイミングは
+on:
+  # mainブランチへのPUSH
+  push:
+    branches:
+      - main
+  # プルリクの作成と更新
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+jobs:
+  check: # job名
+    # ubuntuで動かす
+    runs-on: ubuntu-latest
+    steps:
+      # 該当ブランチをチェックアウトする
+      - uses: actions/checkout@v3
+      # Python環境を構築する
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      # Poetryをインストールする
+      - run: pip install poetry
+      # ライブラリをインストールする
+      - run: poetry install
+      # フォーマットを確認する
+      - run: poetry run black . --check
+      # lintを確認する
+      - run: poetry run pflake8

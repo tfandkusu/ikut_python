@@ -1,7 +1,11 @@
 # %%
 import os
 import cv2
+import tensorflow as tf
 
+# %%
+interpreter = tf.lite.Interpreter(model_path="model/model.tflite")
+interpreter.get_input_details()
 # %%
 path = os.path.join("data/01_src_movie/src.mp4")
 # 動画を読み込む

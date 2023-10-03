@@ -14,8 +14,8 @@ on:
       - reopened
 jobs:
   check: # job名
-    # Mac OS 13 で動かす
-    runs-on: macos-13
+    # Ubuntu で動かす
+    runs-on: ubuntu-latest
     steps:
       # 該当ブランチをチェックアウトする
       - uses: actions/checkout@v3

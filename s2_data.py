@@ -19,3 +19,6 @@ class S2Data:
                     all_images.append(LabelPath(label=label, path=path))
         for image in all_images:
             print(image)
+        # all_images を訓練データとテストデータに分ける
+        self.train = all_images[:-5000]
+        self.test = all_images[-5000:]

@@ -10,6 +10,8 @@ LABELS: list[str] = ["start", "end", "kill", "death", "other"]
 CSV_PATH = "data/s24_auto_ml.csv"
 IMAGE_DIR = "data/03_s2train/"
 BATCH_SIZE = 50
+TRAIN_SIZE = 50000
+TEST_SIZE = 5000
 
 
 class S2Data:
@@ -32,6 +34,27 @@ class S2Data:
         while True:
             xs, ys = self.make_batch()
             yield (xs, ys)
+
+    def generator_test(self):
+        "テストデータのジェネレータ"
+        step = 0
+        while True:
+            xs = []
+            ys = []
+            for index in range(step * BATCH_SIZE, (step + 1) * BATCH_SIZE):
+                # 訓練データの入力x 作成
+                img = cv2.imread(self.test[index].path)
+                x = cv2.resize(img, (224, 224))
+                # 訓練データの入力y 作成
+                label = self.test[index].label
+                y = tf.keras.utils.to_categorical(LABELS.index(label), len(LABELS))
+                xs.append(x)
+                ys.append(y)
+            yield (np.array(xs), np.array(ys))
+            step += 1
+
+    def test_steps(self):
+        return len(self.test) // BATCH_SIZE
 
     def make_batch(self):
         "訓練データのバッチを作成する"

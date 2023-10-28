@@ -4,10 +4,12 @@ from label_path import LabelPath
 import cv2
 import random
 import tensorflow as tf
+import numpy as np
 
 LABELS: list[str] = ["start", "end", "kill", "death", "other"]
 CSV_PATH = "data/s24_auto_ml.csv"
 IMAGE_DIR = "data/03_s2train/"
+BATCH_SIZE = 50
 
 
 class S2Data:
@@ -25,10 +27,27 @@ class S2Data:
         self.train = all_images[:-5000]
         self.test = all_images[-5000:]
 
+    def generator(self):
+        "訓練データのジェネレータ"
+        while True:
+            xs, ys = self.make_batch()
+            yield (xs, ys)
+
+    def make_batch(self):
+        "訓練データのバッチを作成する"
+        xs = []
+        ys = []
+        for i in range(BATCH_SIZE):
+            x, y = self.make_xy()
+            xs.append(x)
+            ys.append(y)
+        return np.array(xs), np.array(ys)
+
     def make_xy(self):
         "訓練データの入力x, 出力yのペアを作成する"
-        # 訓練データの入力x 作成
+        # ランダムに訓練データを選ぶ
         index = random.randint(0, len(self.train) - 1)
+        # 訓練データの入力x 作成
         img = cv2.imread(self.train[index].path)
         x = cv2.resize(img, (224, 224))
         # 訓練データの入力y 作成

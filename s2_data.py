@@ -2,7 +2,6 @@ import csv
 import os
 from label_path import LabelPath
 import cv2
-import random
 import tensorflow as tf
 import numpy as np
 
@@ -31,11 +30,13 @@ class S2Data:
 
     def generator(self):
         "訓練データのジェネレータ"
+        batch_index = 0
         while True:
-            xs, ys = self.make_batch()
+            xs, ys = self.make_batch(batch_index)
             yield (xs, ys)
+            batch_index += 1
 
-    def generator_test(self):
+    def generator_validation_data(self):
         "テストデータのジェネレータ"
         step = 0
         while True:
@@ -56,20 +57,19 @@ class S2Data:
     def test_steps(self):
         return len(self.test) // BATCH_SIZE
 
-    def make_batch(self):
+    def make_batch(self, batch_index):
         "訓練データのバッチを作成する"
         xs = []
         ys = []
         for i in range(BATCH_SIZE):
-            x, y = self.make_xy()
+            x, y = self.make_xy(batch_index * BATCH_SIZE + i)
             xs.append(x)
             ys.append(y)
         return np.array(xs), np.array(ys)
 
-    def make_xy(self):
+    def make_xy(self, index):
         "訓練データの入力x, 出力yのペアを作成する"
-        # ランダムに訓練データを選ぶ
-        index = random.randint(0, len(self.train) - 1)
+        index = index % len(self.train)
         # 訓練データの入力x 作成
         img = cv2.imread(self.train[index].path)
         x = cv2.resize(img, (224, 224))

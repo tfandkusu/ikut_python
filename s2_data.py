@@ -54,7 +54,7 @@ class S2Data:
             yield (np.array(xs), np.array(ys))
             step += 1
 
-    def test_steps(self):
+    def validation_steps(self):
         return len(self.test) // BATCH_SIZE
 
     def make_batch(self, batch_index):

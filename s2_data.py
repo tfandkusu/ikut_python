@@ -6,8 +6,7 @@ import tensorflow as tf
 import numpy as np
 
 LABELS: list[str] = ["start", "end", "kill", "death", "other"]
-CSV_PATH = "data/s24_auto_ml.csv"
-IMAGE_DIR = "data/03_s2train/"
+DATASET_PATH = "s2_dataset.hdf5"
 BATCH_SIZE = 50
 TRAIN_SIZE = 50000
 TEST_SIZE = 5000
@@ -15,18 +14,8 @@ TEST_SIZE = 5000
 
 class S2Data:
     def __init__(self):
-        all_images: list[LabelPath] = []
-        with open(CSV_PATH) as f:
-            for row in csv.reader(f):
-                uri = row[0]
-                label = row[1]
-                if label in LABELS:
-                    filename = uri.split("/")[-1]
-                    path = os.path.join(IMAGE_DIR, filename)
-                    all_images.append(LabelPath(label=label, path=path))
-        # all_images を訓練データとテストデータに分ける
-        self.train = all_images[:-5000]
-        self.test = all_images[-5000:]
+        self.train = []
+        self.test = []
 
     def generator(self):
         "訓練データのジェネレータ"

@@ -1,68 +1,48 @@
-import csv
-import os
-from label_path import LabelPath
-import cv2
-import tensorflow as tf
-import numpy as np
+import h5py
 
 LABELS: list[str] = ["start", "end", "kill", "death", "other"]
 DATASET_PATH = "s2_dataset.hdf5"
 BATCH_SIZE = 50
-TRAIN_SIZE = 50000
+TRAIN_SIZE = 47350
 TEST_SIZE = 5000
+TRAIN_BATCH_COUNT = TRAIN_SIZE // BATCH_SIZE
+TEST_BATCH_COUNT = TEST_SIZE // BATCH_SIZE
 
 
 class S2Data:
     def __init__(self):
-        self.train = []
-        self.test = []
+        h = h5py.File(DATASET_PATH, "r")
+        self.train_xs = h["train_xs"]
+        self.train_ys = h["train_ys"]
+        self.test_xs = h["test_xs"]
+        self.test_ys = h["test_ys"]
 
     def generator(self):
         "訓練データのジェネレータ"
         batch_index = 0
         while True:
-            xs, ys = self.make_batch(batch_index)
+            xs = self.train_xs[  # type: ignore
+                batch_index * BATCH_SIZE : (batch_index + 1) * BATCH_SIZE
+            ]
+            ys = self.train_ys[  # type: ignore
+                batch_index * BATCH_SIZE : (batch_index + 1) * BATCH_SIZE
+            ]
             yield (xs, ys)
             batch_index += 1
+            if batch_index >= TRAIN_BATCH_COUNT:
+                batch_index = 0
 
     def generator_validation_data(self):
         "テストデータのジェネレータ"
-        step = 0
+        batch_index = 0
         while True:
-            xs = []
-            ys = []
-            for index in range(step * BATCH_SIZE, (step + 1) * BATCH_SIZE):
-                # 訓練データの入力x 作成
-                img = cv2.imread(self.test[index].path)
-                x = cv2.resize(img, (224, 224))
-                # 訓練データの入力y 作成
-                label = self.test[index].label
-                y = tf.keras.utils.to_categorical(LABELS.index(label), len(LABELS))
-                xs.append(x)
-                ys.append(y)
-            yield (np.array(xs), np.array(ys))
-            step += 1
-
-    def validation_steps(self):
-        return len(self.test) // BATCH_SIZE
-
-    def make_batch(self, batch_index):
-        "訓練データのバッチを作成する"
-        xs = []
-        ys = []
-        for i in range(BATCH_SIZE):
-            x, y = self.make_xy(batch_index * BATCH_SIZE + i)
-            xs.append(x)
-            ys.append(y)
-        return np.array(xs), np.array(ys)
-
-    def make_xy(self, index):
-        "訓練データの入力x, 出力yのペアを作成する"
-        index = index % len(self.train)
-        # 訓練データの入力x 作成
-        img = cv2.imread(self.train[index].path)
-        x = cv2.resize(img, (224, 224))
-        # 訓練データの入力y 作成
-        label = self.train[index].label
-        y = tf.keras.utils.to_categorical(LABELS.index(label), len(LABELS))
-        return x, y
+            xs = self.test_xs[  # type: ignore
+                batch_index * BATCH_SIZE : (batch_index + 1) * BATCH_SIZE
+            ]
+            ys = self.test_ys[  # type: ignore
+                batch_index * BATCH_SIZE : (batch_index + 1) * BATCH_SIZE
+            ]
+            yield (xs, ys)
+            batch_index += 1
+            if batch_index >= TEST_BATCH_COUNT:
+                batch_index = 0

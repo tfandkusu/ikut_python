@@ -2,8 +2,9 @@ import tensorflow as tf
 import s2_data
 from s2_data import S2Data
 
+
 g = S2Data()
-model: tf.keras.Model = tf.keras.applications.EfficientNetV2B0(
+model: tf.keras.Model = tf.keras.applications.EfficientNetV2B3(
     input_shape=(224, 224, 3),
     weights=None,  # type: ignore
     classes=5,
@@ -28,9 +29,9 @@ initial_epoch = 0
 model.fit(
     x=g.generator(),
     validation_data=g.generator_validation_data(),
-    validation_steps=g.validation_steps(),
+    validation_steps=s2_data.TEST_BATCH_COUNT,
     callbacks=[cb],
-    steps_per_epoch=s2_data.TRAIN_SIZE / s2_data.BATCH_SIZE,
+    steps_per_epoch=s2_data.TRAIN_BATCH_COUNT,
     epochs=15,
     initial_epoch=initial_epoch,
 )

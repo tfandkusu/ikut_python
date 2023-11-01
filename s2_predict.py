@@ -22,7 +22,7 @@ model.load_weights("weight_b3.hdf5")
 it = g.generator_validation_data()
 yss_true = np.zeros((s2_data.TEST_SIZE, len(s2_data.LABELS)), dtype=np.float32)
 yss_pred = np.zeros((s2_data.TEST_SIZE, len(s2_data.LABELS)), dtype=np.float32)
-for batch_index in range(g.validation_steps()):
+for batch_index in range(s2_data.TEST_BATCH_COUNT):
     xs, ys_true = it.__next__()
     ys_pred = model.predict(xs)
     yss_true[

@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import s2_data
 from label_path import LabelPath
+from tqdm import tqdm
 
 CSV_PATH = "data/s24_auto_ml.csv"
 IMAGE_DIR = "data/03_s2train/"
@@ -35,17 +36,17 @@ with h5py.File(s2_data.DATASET_PATH, "w") as h5:
     test_ys = h5.create_dataset(
         "test_ys", shape=(len(test), len(s2_data.LABELS)), dtype=np.uint8
     )
-    for index, label_path in enumerate(train):
+    for index, label_path in enumerate(tqdm(train)):
         image = tf.keras.utils.load_img(label_path.path, target_size=(224, 224))
-        x = tf.keras.utils.img_to_array(image)
+        x = tf.keras.utils.img_to_array(image, dtype=np.uint8)
         y = tf.keras.utils.to_categorical(
             s2_data.LABELS.index(label_path.label), len(s2_data.LABELS)
         )
         train_xs[index] = x
         train_ys[index] = y
-    for index, label_path in enumerate(test):
+    for index, label_path in enumerate(tqdm(test)):
         image = tf.keras.utils.load_img(label_path.path, target_size=(224, 224))
-        x = tf.keras.utils.img_to_array(image)
+        x = tf.keras.utils.img_to_array(image, dtype=np.uint8)
         y = tf.keras.utils.to_categorical(
             s2_data.LABELS.index(label_path.label), len(s2_data.LABELS)
         )

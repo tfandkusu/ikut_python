@@ -18,10 +18,12 @@ model.compile(
 
 
 # コールバック
+# TODO やり方古いので、今のやり方にする
 class Callback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         "各エポック終了時に重みを保存する"
         model.save("weight.hdf5")
+        # tf.keras.saving.save_model(model, "data/04_s2_savedmodel/")
 
 
 cb = Callback()
@@ -30,7 +32,7 @@ model.fit(
     x=g.generator(),
     validation_data=g.generator_validation_data(),
     validation_steps=s2_data.TEST_BATCH_COUNT,
-    callbacks=[cb],
+    # callbacks=[cb],
     steps_per_epoch=s2_data.TRAIN_BATCH_COUNT,
     epochs=15,
     initial_epoch=initial_epoch,

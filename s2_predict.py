@@ -6,18 +6,7 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 
 g = S2Data()
-model: tf.keras.Model = tf.keras.applications.EfficientNetV2B3(
-    input_shape=(224, 224, 3),
-    weights=None,  # type: ignore
-    classes=5,
-    classifier_activation="softmax",
-)
-model.compile(
-    optimizer="adam",
-    loss="categorical_crossentropy",
-    metrics=["accuracy"],
-)
-model.load_weights("weight_b3.hdf5")
+model: tf.keras.Model = tf.keras.saving.load_model(s2_data.MODEL_DIR)  # type: ignore
 
 it = g.generator_validation_data()
 yss_true = np.zeros((s2_data.TEST_SIZE, len(s2_data.LABELS)), dtype=np.float32)

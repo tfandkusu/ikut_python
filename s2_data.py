@@ -2,6 +2,7 @@ import h5py
 
 LABELS: list[str] = ["start", "end", "kill", "death", "other"]
 DATASET_PATH = "s2_dataset.hdf5"
+MODEL_DIR = "data/04_s2_savedmodel/"
 BATCH_SIZE = 50
 TRAIN_SIZE = 47350
 TEST_SIZE = 5000

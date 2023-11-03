@@ -4,7 +4,7 @@ from s2_data import S2Data
 
 
 g = S2Data()
-model: tf.keras.Model = tf.keras.applications.EfficientNetV2B3(
+model: tf.keras.Model = tf.keras.applications.EfficientNetV2B2(
     input_shape=(224, 224, 3),
     weights=None,  # type: ignore
     classes=5,
@@ -20,8 +20,8 @@ model.compile(
 # コールバック
 class Callback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
-        "各エポック終了時に重みを保存する"
-        model.save("weight.hdf5")
+        "各エポック終了時にモデルを保存する"
+        tf.keras.saving.save_model(model, s2_data.MODEL_DIR)
 
 
 cb = Callback()

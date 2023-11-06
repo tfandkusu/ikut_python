@@ -4,8 +4,13 @@ from s2_data import S2Data
 
 
 g = S2Data()
+# EfficientNetV2B2 を使う
 model: tf.keras.Model = tf.keras.applications.EfficientNetV2B2(
-    input_shape=(224, 224, 3),
+    input_shape=(
+        s2_data.INPUT_IMAGE_SIZE,
+        s2_data.INPUT_IMAGE_SIZE,
+        s2_data.INPUT_IMAGE_CHANNEL,
+    ),
     weights=None,  # type: ignore
     classes=5,
     classifier_activation="softmax",
@@ -17,7 +22,6 @@ model.compile(
 )
 
 
-# コールバック
 class Callback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         "各エポック終了時にモデルを保存する"

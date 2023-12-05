@@ -1,3 +1,4 @@
+import pickle
 import tensorflow as tf
 import s2_data
 from s2_data import S2Data
@@ -30,12 +31,14 @@ class Callback(tf.keras.callbacks.Callback):
 
 cb = Callback()
 initial_epoch = 0
-model.fit(
+history = model.fit(
     x=g.generator(),
     validation_data=g.generator_validation_data(),
     validation_steps=s2_data.TEST_BATCH_COUNT,
     callbacks=[cb],
     steps_per_epoch=s2_data.TRAIN_BATCH_COUNT,
-    epochs=15,
+    epochs=20,
     initial_epoch=initial_epoch,
 )
+with open("history.pickle", "wb") as file:
+    pickle.dump(history.history, file)

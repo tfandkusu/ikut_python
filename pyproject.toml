@@ -18,6 +18,7 @@ h5py = "^3.10.0"
 tqdm = "^4.66.1"
 tensorflowjs = "^4.12.0"
 pillow = "^10.1.0"
+matplotlib = "^3.8.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"

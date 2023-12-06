@@ -36,8 +36,8 @@ history = model.fit(
     validation_data=g.generator_validation_data(),
     validation_steps=s2_data.TEST_BATCH_COUNT,
     callbacks=[cb],
-    steps_per_epoch=s2_data.TRAIN_BATCH_COUNT,
-    epochs=20,
+    steps_per_epoch=2 * s2_data.TRAIN_BATCH_COUNT,
+    epochs=10,
     initial_epoch=initial_epoch,
 )
 with open("history.pickle", "wb") as file:

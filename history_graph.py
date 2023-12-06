@@ -1,7 +1,22 @@
+# %%
 import pickle
+import pandas as pd
 
-with open("history.pickle", "rb") as file:
-    history = pickle.load(file)
-
-val_accuracy = history["val_accuracy"]
-print(val_accuracy)
+# %%
+with open("history_apple.pickle", "rb") as file:
+    history_apple = pickle.load(file)
+with open("history_nvidia.pickle", "rb") as file:
+    history_nvidia = pickle.load(file)
+# %%
+epochs = []
+for i in range(0, 20):
+    epochs.append([history_apple["val_accuracy"][i], history_nvidia["val_accuracy"][i]])
+# %%
+df = pd.DataFrame(
+    epochs,
+    columns=["apple_val_accuracy", "nvidia_val_accuracy"],
+    index=range(1, 21),
+)
+# %%
+df.plot()
+# %%
